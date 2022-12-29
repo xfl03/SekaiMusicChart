@@ -791,7 +791,7 @@ class SUS:
 
         return drawing
 
-    def export(self, file_name, style_sheet='', themehint=True):
+    def export(self, file_name, style_sheet='', display_skill_extra=True):
         n_bars = math.ceil(self.score.notes[-1].bar - 1e-6)
         drawings: list[svgwrite.Drawing] = []
 
@@ -806,16 +806,17 @@ class SUS:
             e = self.score.get_event(i)
 
             if e.bar > i - 1 and e.text == "SKILL":
-                self.special_cover_objects.append(CoverObject(
-                    self.score.get_bar(self.score.get_time(e.bar) - 5 / 60),
-                    self.score.get_bar(self.score.get_time(e.bar) + 5 + 5 / 60),
-                    "skill-great"
-                ))
-                self.special_cover_objects.append(CoverObject(
-                    self.score.get_bar(self.score.get_time(e.bar) - 2.5/60),
-                    self.score.get_bar(self.score.get_time(e.bar) + 5 + 2.5 / 60),
-                    "skill-perfect"
-                ))
+                if display_skill_extra:
+                    self.special_cover_objects.append(CoverObject(
+                        self.score.get_bar(self.score.get_time(e.bar) - 5 / 60),
+                        self.score.get_bar(self.score.get_time(e.bar) + 5 + 5 / 60),
+                        "skill-great"
+                    ))
+                    self.special_cover_objects.append(CoverObject(
+                        self.score.get_bar(self.score.get_time(e.bar) - 2.5/60),
+                        self.score.get_bar(self.score.get_time(e.bar) + 5 + 2.5 / 60),
+                        "skill-perfect"
+                    ))
                 self.special_cover_objects.append(CoverObject(
                     e.bar,self.score.get_bar(self.score.get_time(e.bar) + 5), "skill-duration"
                 ))
@@ -905,31 +906,31 @@ class SUS:
             ),
             class_='subtitle',
         ))
-        if themehint:
-            drawing.add(svgwrite.text.Text(
-                '白色配色：/theme white',
-                insert=(
-                    width - 300,
-                    height + self.padding * 3.4,
-                ),
-                class_='themehint',
-            ))
-            drawing.add(svgwrite.text.Text(
-                '黑色配色：/theme black',
-                insert=(
-                    width - 300,
-                    height + self.padding * 4.5,
-                ),
-                class_='themehint',
-            ))
-            drawing.add(svgwrite.text.Text(
-                '彩色配色：/theme color',
-                insert=(
-                    width - 300,
-                    height + self.padding * 5.6,
-                ),
-                class_='themehint',
-            ))
+        # if themehint:
+        #     drawing.add(svgwrite.text.Text(
+        #         '白色配色：/theme white',
+        #         insert=(
+        #             width - 300,
+        #             height + self.padding * 3.4,
+        #         ),
+        #         class_='themehint',
+        #     ))
+        #     drawing.add(svgwrite.text.Text(
+        #         '黑色配色：/theme black',
+        #         insert=(
+        #             width - 300,
+        #             height + self.padding * 4.5,
+        #         ),
+        #         class_='themehint',
+        #     ))
+        #     drawing.add(svgwrite.text.Text(
+        #         '彩色配色：/theme color',
+        #         insert=(
+        #             width - 300,
+        #             height + self.padding * 5.6,
+        #         ),
+        #         class_='themehint',
+        #     ))
         # scale = self.scale()
         # scale['x'] = width - self.meta_size
         # scale['y'] = height + self.padding * 2
@@ -937,16 +938,16 @@ class SUS:
         drawing.add(svgwrite.text.Text(
             'Code by ぷろせかもえ！ (pjsekai.moe)　& Unibot',
             insert=(
-                width - 720,
-                height + self.padding * 5.6,
+                width - 900,
+                height + self.padding * 4.2,
             ),
             class_='themehint',
         ))
         drawing.add(svgwrite.text.Text(
             'Modified by 33 (3-3.dev & bilibili @xfl03)',
             insert=(
-                width - 620,
-                height + self.padding * 6.7,
+                width - 770,
+                height + self.padding * 5.9,
             ),
             class_='themehint',
         ))

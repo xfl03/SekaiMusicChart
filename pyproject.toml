@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.11"
 svgwrite = "^1.4.3"
 cairosvg = "^2.5.2"
+requests = "^2.28.1"
 
 
 [build-system]

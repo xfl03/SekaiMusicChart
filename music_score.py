@@ -1,6 +1,8 @@
+import argparse
 import json
 import os
 import time
+import requests
 
 import cairosvg
 
@@ -15,17 +17,27 @@ note_sizes = {
 }
 
 
-def parse(music_id, difficulty, theme, savepng=True, jacketdir=None, title=None, artist=None):
-    with open(f'../assets/music/music_score/{str(music_id).zfill(4)}_01_rip/{difficulty}.txt', 'r',
-              encoding='utf-8') as f:
-        sustext = f.read()
-    lines = sustext.splitlines()
+def get_master_data(key):
+    url = '%s/%s.json' % (args.data_host, key)
+    print('fetching music data from %s' % url)
+    r = requests.get(url)
+    if r.status_code != 200:
+        print(r.status_code)
+        return []
+    return r.json()
 
-    if jacketdir is None:
-        jacketdir = '../../../../../assets/music/jacket/%s_rip/%s.png'
 
-    with open('../sekai-master-db-diff/musics.json', 'r', encoding='utf-8') as f:
-        data = json.load(f)
+def parse(music_id, difficulty, theme, savepng=True, title=None, artist=None):
+    url = '%s/music/music_score/%04d_01/%s' % (args.asset_host, music_id, difficulty)
+    print('fetching score from %s' % url)
+    r = requests.get(url)
+    if r.status_code != 200:
+        print(r.status_code)
+        return
+    lines = r.text.splitlines()
+
+    data = get_master_data("musics")
+
     for i in data:
         if i['id'] == music_id:
             music = i
@@ -43,8 +55,7 @@ def parse(music_id, difficulty, theme, savepng=True, jacketdir=None, title=None,
         music = {'title': title, 'assetbundleName': 'jacket_s_%03d' % music_id}
 
     playlevel = '?'
-    with open('../sekai-master-db-diff/musicDifficulties.json', 'r', encoding='utf-8') as f:
-        data = json.load(f)
+    data = get_master_data("musicDifficulties")
     for i in data:
         if i['musicId'] == music_id and i['musicDifficulty'] == difficulty:
             playlevel = i["playLevel"]
@@ -58,7 +69,7 @@ def parse(music_id, difficulty, theme, savepng=True, jacketdir=None, title=None,
             'artist': artist,
             'difficulty': difficulty,
             'playlevel': playlevel,
-            'jacket': jacketdir % (music['assetbundleName'], music['assetbundleName'])
+            'jacket': '%s/music/jacket/%s/%s.webp' % (args.asset_host, music['assetbundleName'], music['assetbundleName'])
         }),
     )
 
@@ -86,16 +97,16 @@ def parse(music_id, difficulty, theme, savepng=True, jacketdir=None, title=None,
             for event in rebase.get('events', [])
         ], offset=rebase.get('offset', 0))
 
-    file_name = 'charts/moe/%s/%d/%s' % (theme, music_id, difficulty)
+    file_name = '%s/%s/%d/%s' % (args.out_dir, theme, music_id, difficulty)
     os.makedirs(os.path.dirname(file_name), exist_ok=True)
 
-    themehint = False
+    # themehint = False
     if theme == 'svg' or theme == 'pjskguess':
         with open(f'chart/white/css/sus.css', encoding='utf-8') as f:
             style_sheet = f.read()
         with open(f'chart/white/css/master.css') as f:
             style_sheet += '\n' + f.read()
-        themehint = False
+        # themehint = False
     elif theme == 'color':
         with open(f'chart/{theme}/css/sus.css', encoding='utf-8') as f:
             style_sheet = f.read()
@@ -107,7 +118,7 @@ def parse(music_id, difficulty, theme, savepng=True, jacketdir=None, title=None,
         with open(f'chart/{theme}/css/master.css') as f:
             style_sheet += '\n' + f.read()
 
-    sus.export(file_name + '.svg', style_sheet=style_sheet, themehint=themehint)
+    sus.export(file_name + '.svg', style_sheet=style_sheet, display_skill_extra=True)
     if savepng:
         print(file_name)
         cairosvg.svg2png(url=file_name + '.svg', write_to=file_name + '.png', scale=1.3)
@@ -115,10 +126,17 @@ def parse(music_id, difficulty, theme, savepng=True, jacketdir=None, title=None,
 
 if __name__ == '__main__':
     start = time.time()
-    musicid = 62
-    parse(musicid, 'master', 'white')
-    # parse(musicid, 'expert')
-    # parse(musicid, 'hard')
-    # parse(musicid, 'normal')
-    # parse(musicid, 'easy')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--asset_host', default='https://asset3.pjsekai.moe')
+    parser.add_argument('--data_host',
+                        default='https://raw.githubusercontent.com/Sekai-World/sekai-master-db-diff/main')
+    parser.add_argument('--out_dir',
+                        default='charts/moe')
+    parser.add_argument('--music_id', type=int,
+                        default=1)
+    parser.add_argument('--music_difficulty',
+                        default='master')
+    args = parser.parse_args()
+
+    parse(args.music_id, args.music_difficulty, 'white')
     print(time.time() - start)
