@@ -71,8 +71,6 @@ class SUS:
 
     meta_size = 120
 
-    special_cover_objects: list[CoverObject] = []
-
     def __init__(
             self,
             lines: list[str],
@@ -117,6 +115,8 @@ class SUS:
         self.note_host = note_host
 
         self.words: list[Word] = []
+
+        self.special_cover_objects: list[CoverObject] = []
 
     def __getitem__(self, key: slice) -> svgwrite.Drawing:
         bar_from = key.start or 0
