@@ -405,7 +405,7 @@ class SUS:
         def draw_cover_object(cover_object: CoverObject):
             if isinstance(cover_object, CoverText):
                 cover_bar_from = cover_object.bar_from
-                if cover_bar_from < bar_from or cover_bar_from >= bar_to:
+                if cover_bar_from < bar_from - 0.2 or cover_bar_from >= bar_to - 0.1:
                     return
                 drawing.add(drawing.text(
                     cover_object.text,
@@ -838,6 +838,9 @@ class SUS:
                     continue
                 self.special_cover_objects.append(CoverRect(
                     e.bar, "fever-duration", self.score.get_bar(self.music_meta["fever_end_time"])
+                ))
+                self.special_cover_objects.append(CoverText(
+                    e.bar, "skill-score", "多+%.2f%%" % (self.music_meta["fever_score"] * 100)
                 ))
 
         # Add skill cover object

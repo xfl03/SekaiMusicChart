@@ -1,4 +1,5 @@
 import argparse
+import functools
 import json
 import os
 import time
@@ -17,6 +18,7 @@ note_sizes = {
 }
 
 
+@functools.lru_cache()
 def get_request(url):
     print('fetching from %s' % url)
     r = requests.get(url)
@@ -26,6 +28,7 @@ def get_request(url):
     return r
 
 
+@functools.lru_cache()
 def get_master_data(key):
     url = '%s/%s.json' % (args.data_host, key)
     return get_request(url).json()
@@ -141,7 +144,6 @@ def parse(music_id, difficulty, theme, savepng=True, title=None, artist=None):
 
 
 if __name__ == '__main__':
-    start = time.time()
     parser = argparse.ArgumentParser()
     parser.add_argument('--asset_host', default='https://asset3.pjsekai.moe')
     parser.add_argument('--data_host',
@@ -149,11 +151,15 @@ if __name__ == '__main__':
     parser.add_argument('--meta_url')
     parser.add_argument('--out_dir',
                         default='charts/moe')
-    parser.add_argument('--music_id', type=int,
-                        default=1)
+    parser.add_argument('--music_id',
+                        default="1")
     parser.add_argument('--music_difficulty',
                         default='master')
     args = parser.parse_args()
 
-    parse(args.music_id, args.music_difficulty, 'white')
-    print(time.time() - start)
+    for music in args.music_id.split(","):
+        for diff in args.music_difficulty.split(","):
+            start = time.time()
+            parse(int(music), diff, 'white')
+            print(time.time() - start)
+
