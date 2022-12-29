@@ -1,0 +1,49 @@
+{
+    "musicId": 95,
+    "events": [
+        {
+            "bar": 0,
+            "bpm": 130
+        },
+        {
+            "bar": 1,
+            "section": "intro"
+        },
+        {
+            "bar": 9,
+            "section": "verse"
+        },
+        {
+            "bar": 17,
+            "section": "bridge"
+        },
+        {
+            "bar": 21,
+            "section": "chorus"
+        },
+        {
+            "bar": 29,
+            "section": "post-chorus"
+        },
+        {
+            "bar": 34,
+            "section": "intro"
+        },
+        {
+            "bar": 46,
+            "section": "bridge-2"
+        },
+        {
+            "bar": 54,
+            "section": "chorus-2"
+        },
+        {
+            "bar": 62,
+            "section": "post-chorus-2"
+        },
+        {
+            "bar": 68,
+            "section": "outro"
+        }
+    ]
+}

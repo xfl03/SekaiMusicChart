@@ -1,0 +1,38 @@
+{
+    "musicId": 129,
+    "events": [
+        {
+            "bar": 0,
+            "bpm": 174,
+            "section": "intro"
+        },
+        {
+            "bar": 8,
+            "section": "verse"
+        },
+        {
+            "bar": 24,
+            "section": "bridge"
+        },
+        {
+            "bar": 32,
+            "section": "chorus"
+        },
+        {
+            "bar": 40,
+            "section": "post-chorus"
+        },
+        {
+            "bar": 50,
+            "section": "inter"
+        },
+        {
+            "bar": 60,
+            "section": "chorus-2"
+        },
+        {
+            "bar": 76,
+            "section": "post-chorus-2"
+        }
+    ]
+}

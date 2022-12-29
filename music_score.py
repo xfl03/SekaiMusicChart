@@ -69,7 +69,7 @@ def parse(music_id, difficulty, theme, savepng=True, title=None, artist=None):
             'artist': artist,
             'difficulty': difficulty,
             'playlevel': playlevel,
-            'jacket': '%s/music/jacket/%s/%s.webp' % (args.asset_host, music['assetbundleName'], music['assetbundleName'])
+            'jacket': '%s/music/jacket/%s/%s.png' % (args.asset_host, music['assetbundleName'], music['assetbundleName'])
         }),
     )
 
@@ -86,6 +86,7 @@ def parse(music_id, difficulty, theme, savepng=True, title=None, artist=None):
         pass
 
     if rebase:
+        print("Rebase will be applied")
         sus.score = sus.score.rebase([
             chart.Event(
                 bar=event.get('bar'),

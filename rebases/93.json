@@ -1,0 +1,55 @@
+{
+    "musicId": 93,
+    "events": [
+        {
+            "bar": 0,
+            "bpm": 190,
+            "section": "intro"
+        },
+        {
+            "bar": 20,
+            "section": "verse"
+        },
+        {
+            "bar": 36,
+            "section": "bridge"
+        },
+        {
+            "bar": 52,
+            "section": "chorus"
+        },
+        {
+            "bar": 68,
+            "section": "post-chorus"
+        },
+        {
+            "bar": 84,
+            "section": "outro",
+            "sentenceLength": 2
+        },
+        {
+            "bar": 86,
+            "bpm": 160
+        },
+        {
+            "bar": 86.25,
+            "bpm": 155
+        },
+        {
+            "bar": 86.375,
+            "bpm": 100
+        },
+        {
+            "bar": 86.5,
+            "bpm": 76
+        },
+        {
+            "bar": 86.625,
+            "bpm": 61
+        },
+        {
+            "bar": 86.75,
+            "bpm": 64.5
+        }
+    ]
+}

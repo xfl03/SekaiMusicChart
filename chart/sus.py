@@ -802,10 +802,10 @@ class SUS:
         event = Event(bar=0, bpm=120, bar_length=4, sentence_length=4)
 
         # Add skill cover object
-        for i in range(n_bars + 1):
-            e = self.score.get_event(i)
+        for e in self.score.events:
 
-            if e.bar > i - 1 and e.text == "SKILL":
+            if e.text == "SKILL":
+                print(e)
                 if display_skill_extra:
                     self.special_cover_objects.append(CoverObject(
                         self.score.get_bar(self.score.get_time(e.bar) - 5 / 60),
