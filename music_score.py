@@ -17,24 +17,23 @@ note_sizes = {
 }
 
 
-def get_master_data(key):
-    url = '%s/%s.json' % (args.data_host, key)
-    print('fetching music data from %s' % url)
+def get_request(url):
+    print('fetching from %s' % url)
     r = requests.get(url)
     if r.status_code != 200:
         print(r.status_code)
-        return []
-    return r.json()
+        exit(0)
+    return r
+
+
+def get_master_data(key):
+    url = '%s/%s.json' % (args.data_host, key)
+    return get_request(url).json()
 
 
 def parse(music_id, difficulty, theme, savepng=True, title=None, artist=None):
     url = '%s/music/music_score/%04d_01/%s' % (args.asset_host, music_id, difficulty)
-    print('fetching score from %s' % url)
-    r = requests.get(url)
-    if r.status_code != 200:
-        print(r.status_code)
-        return
-    lines = r.text.splitlines()
+    lines = get_request(url).text.splitlines()
 
     data = get_master_data("musics")
 
@@ -59,6 +58,21 @@ def parse(music_id, difficulty, theme, savepng=True, title=None, artist=None):
     for i in data:
         if i['musicId'] == music_id and i['musicDifficulty'] == difficulty:
             playlevel = i["playLevel"]
+            break
+
+    music_meta = None
+    if args.meta_url:
+        music_metas = get_request(args.meta_url).json()
+        for mm in music_metas:
+            if mm['music_id'] == music_id and mm['difficulty'] == difficulty:
+                music_meta = mm
+                break
+
+    if music_meta:
+        print("Music meta found")
+        print(music_meta)
+    else:
+        print("Music meta not found")
 
     sus = chart.SUS(
         lines,
@@ -69,7 +83,8 @@ def parse(music_id, difficulty, theme, savepng=True, title=None, artist=None):
             'artist': artist,
             'difficulty': difficulty,
             'playlevel': playlevel,
-            'jacket': '%s/music/jacket/%s/%s.png' % (args.asset_host, music['assetbundleName'], music['assetbundleName'])
+            'jacket': '%s/music/jacket/%s/%s.png' % (args.asset_host, music['assetbundleName'], music['assetbundleName']),
+            'meta': music_meta,
         }),
     )
 
@@ -79,11 +94,11 @@ def parse(music_id, difficulty, theme, savepng=True, title=None, artist=None):
     except:
         rebase = None
 
-    try:
-        with open('rebases/%s.lyric' % music_id, encoding='utf-8') as f:
-            sus.words = chart.load_lyric(f.readlines())
-    except:
-        pass
+    # try:
+    #     with open('rebases/%s.lyric' % music_id, encoding='utf-8') as f:
+    #         sus.words = chart.load_lyric(f.readlines())
+    # except:
+    #     pass
 
     if rebase:
         print("Rebase will be applied")
@@ -131,6 +146,7 @@ if __name__ == '__main__':
     parser.add_argument('--asset_host', default='https://asset3.pjsekai.moe')
     parser.add_argument('--data_host',
                         default='https://raw.githubusercontent.com/Sekai-World/sekai-master-db-diff/main')
+    parser.add_argument('--meta_url')
     parser.add_argument('--out_dir',
                         default='charts/moe')
     parser.add_argument('--music_id', type=int,

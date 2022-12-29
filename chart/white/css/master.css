@@ -21,3 +21,16 @@
 .skill-great {
     fill: #B0BEC5;
 }
+
+.skill-score {
+    font-size: 38px;
+    /*font-weight: 900;*/
+    font-family: Osaka;
+    fill: black;
+    text-anchor: start;
+    /*text-shadow: black 0.1em 0.1em 0.2em;*/
+}
+
+.fever-duration {
+    fill: #ECEFF1;
+}
